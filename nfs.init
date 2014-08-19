@@ -1,0 +1,6 @@
+#!/bin/bash
+
+service rpcbind start
+service nfs start
+
+#exec inotifywait -m /exports

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+service nfs stop
+service rpcbind stop

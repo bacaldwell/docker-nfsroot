@@ -1,26 +1,59 @@
 Docker NFSroot image server
 ================
-Modified by: Blake Caldwell <blakec@ornl.gov>
+Blake Caldwell <blakec@ornl.gov>
 
-Prepapring image:
+Prerequisites:
+----
+1. The docker bridge will need to be accessible by nodes in the cluster to boot from a NFSroot
+container. Note that this is not the standard docker configuration
+2. The PXE comdline will need to have root=dhcp
+3. DHCP will need to hand out the root-path option to point to the container. For example
+    option root-path  "nfs:xxx.xxx.xxx.xxx:/";
+
+Prepapring the base image:
 ----
 See https://rdteam.ornl.gov/farm/cades/doku.php/infra:ironic_nfsroot_docker
 
-First tar up the image to ironic-rhel6-pfs-diskless.tar and then import the tar file to a Docker image.
+First tar up the image to ironic-rhel6-pfs-diskless.tar and then import the tar file to a docker image.
 The docker-nfsroot Dockerfile builds from diskless:rhel6. Change this if needed (e.g. per cluster image)
 
 ```
 image=prod_diskless
 docker import - diskless:rhel6 < ironic-rhel6-pfs-diskless.tar
+```
+
+Building the NFSroot image serving container:
+----
+Next build the nfs-server container that is based off of the docker image we just built
+```
 git clone https://git.ornl.gov/blakecaldwell/docker-nfsroot.git
 cd docker-nfsroot
 docker build -t nfs-server .
-docker run -d --name $image --priviledged nfs-server
 ```
 
-Run 'docker ps' to verify the container was started and get the tag
+Starting the container:
+----
+Start the container in daemon mode. It will start nfsd and tail /var/log/messages in the
+foreground
+```
+docker run -d --name $image --privileged nfs-server
+```
+
+Run "docker ps $image" to verify the container was started. 
 
 Now / within the container, which is the root of the tarball, will be exported via nfs.
-To get the ip of the server, run 'docker inspect [tag]'. To configure nfsroot via dhcp
-add the root-path option (ISC) to the host definition. For example:
-  option root-path  "nfs4:xxx.xxx.xxx.xxx:/";
+To get the ip of the server, run "docker inspect $image".
+
+Modifying the container once started:
+----
+To get a tty in the container, one way is to use nsenter. The problem with this is that iti
+doesn't drop capabilities. If that is a concern, the recommended way is to use nsinit:
+[Blog on nsenter and nsinit](http://jpetazzo.github.io/2014/03/23/lxc-attach-nsinit-nsenter-docker-0-9/)
+
+The utility for either is for an admin user to make changes to the image that will get 
+propogated to diskless nodes that have it bind mounted as '/'.
+
+```
+PID=$(docker inspect --format '{{.State.Pid}}' $image)
+nsenter --target $PID --mount --uts --ipc --net --pid
+```

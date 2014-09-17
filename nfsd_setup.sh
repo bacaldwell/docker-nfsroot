@@ -11,4 +11,4 @@ set -e
 # Only need to export /, but make it read-only
 echo "/ *(ro,no_root_squash,async)" > /etc/exports
 
-/tmp/nfsrootd/nfsd-start
+/tmp/nfsroot/nfsd-start

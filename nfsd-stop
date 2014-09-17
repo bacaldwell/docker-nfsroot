@@ -1,4 +1,6 @@
 #!/bin/bash
+#$Id$
 
+# Shut it down
 service nfs stop
 service rpcbind stop

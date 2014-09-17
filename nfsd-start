@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Docker NFSroot
+# Blake Caldwell <blakec@ornl.gov>
+
+# Start the nfs server. Nothing special here.
+service rpcbind start
+service nfs start

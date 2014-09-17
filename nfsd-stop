@@ -1,5 +1,7 @@
 #!/bin/bash
-#$Id$
+
+# Docker NFSroot
+# Blake Caldwell <blakec@ornl.gov>
 
 # Shut it down
 service nfs stop

@@ -1,6 +1,16 @@
 Docker NFSroot image server
-================
-Blake Caldwell <blakec@ornl.gov>
+=====================================
+
+v1.0 May 21, 2015
+
+Copyright 2015 Blake Caldwell
+Oak Ridge National Laboratory
+
+This program is licensed under GNU GPLv3. Copy of license in LICENSE
+=====================================
+Credit goes to cpuguy83 for NFS server in a docker container:
+https://github.com/cpuguy83/docker-nfs-server
+=====================================
 
 Prerequisites:
 ----
@@ -12,21 +22,19 @@ container. Note that this is not the standard docker configuration
 
 Prepapring the base image:
 ----
-See https://rdteam.ornl.gov/farm/cades/doku.php/infra:ironic_nfsroot_docker
 
-First tar up the image to ironic-rhel6-pfs-diskless.tar and then import the tar file to a docker image.
+First tar up the image (e.g.) ironic-rhel6-diskless.tar and then import the tar file to a docker image.
 The docker-nfsroot Dockerfile builds from diskless:rhel6. Change this if needed (e.g. per cluster image)
 
 ```
-image=prod_diskless
-docker import - diskless:rhel6 < ironic-rhel6-pfs-diskless.tar
+docker import - diskless:rhel6 < ironic-rhel6-diskless.tar
 ```
 
 Building the NFSroot image serving container:
 ----
 Next build the nfs-server container that is based off of the docker image we just built
 ```
-git clone https://git.ornl.gov/blakecaldwell/docker-nfsroot.git
+git clone https://github.com/bacaldwell/docker-nfsroot.git
 cd docker-nfsroot
 docker build -t nfs-server .
 ```

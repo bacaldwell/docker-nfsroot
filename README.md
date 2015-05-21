@@ -7,10 +7,11 @@ Copyright 2015 Blake Caldwell
 Oak Ridge National Laboratory
 
 This program is licensed under GNU GPLv3. Copy of license in LICENSE
-=====================================
-Credit goes to cpuguy83 for NFS server in a docker container:
+
+Credits
+----
+cpuguy83 for NFS server in a docker container:
 https://github.com/cpuguy83/docker-nfs-server
-=====================================
 
 Prerequisites:
 ----
